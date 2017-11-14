@@ -1,0 +1,64 @@
+{
+  "name": "promo_calculator_chart",
+  "version": "1.0.0",
+  "description": "Promo app with calculator and charts visualisation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "build:watch": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fedir-lozovy/promo_calculator_chart.git"
+  },
+  "author": "Fedr",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fedir-lozovy/promo_calculator_chart/issues"
+  },
+  "homepage": "https://github.com/fedir-lozovy/promo_calculator_chart#readme",
+  "dependencies": {
+    "async": "^2.6.0",
+    "axios": "^0.17.1",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "css-loader": "^0.28.7",
+    "csv-loader": "^2.1.1",
+    "d3": "^3.5.17",
+    "d3-array": "^1.2.1",
+    "d3-axis": "^1.0.8",
+    "d3-brush": "^1.0.4",
+    "d3-geo": "^1.9.0",
+    "d3-scale": "^1.0.6",
+    "d3-selection": "^1.1.0",
+    "d3-shape": "^1.2.0",
+    "d3-svg-legend": "^2.24.1",
+    "d3-transition": "^1.1.0",
+    "dsv-loader": "^2.0.0",
+    "moment": "^2.19.2",
+    "prop-types": "^15.6.0",
+    "react": "^16.1.0",
+    "react-d3": "^0.4.0",
+    "react-d3-basic": "^1.6.11",
+    "react-d3-core": "^1.3.9",
+    "react-dom": "^16.1.0",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.19.0",
+    "webpack": "^3.8.1"
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "stage-0",
+      "react"
+    ]
+  }
+}

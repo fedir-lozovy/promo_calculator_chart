@@ -8,6 +8,7 @@ import Axis from './parts/Axis.jsx'
 import Grid from './parts/Grid.jsx'
 import ToolTip from './parts/ToolTip.jsx'
 import Dots from './parts/Dots.jsx'
+import moment from 'moment'
 
 export default class LineChart extends React.Component {
     static propsTypes = {
@@ -61,7 +62,7 @@ export default class LineChart extends React.Component {
 
     render() {
         var data = this.props.data;
-        var margin = {top: 5, right: 50, bottom: 20, left: 50},
+        var margin = {top: 5, right: 50, bottom: 20, left: 85},
             w = this.state.width - (margin.left + margin.right),
             h = this.props.height - (margin.top + margin.bottom);
         var parseDate = d3.time.format("%d.%m.%Y").parse;
@@ -69,7 +70,19 @@ export default class LineChart extends React.Component {
         data = data.map(d => {
             return {
                 date: parseDate(d.date),
-                count: parseFloat(d.count.replace(',', '.'))
+                count: d.count
+            }
+        });
+        var data1 = this.props.data1.map(d => {
+            return {
+                date: parseDate(d.date),
+                count: d.count
+            }
+        });
+        var data2 = this.props.data2.map(d => {
+            return {
+                date: parseDate(d.date),
+                count: d.count
             }
         });
 
@@ -82,23 +95,32 @@ export default class LineChart extends React.Component {
 
         var y = d3.scale.linear()
             .domain([0, d3.max(data, function (d) {
-                return d.count + 1;
+                return d.count + parseInt(100*d.count/10)/100;
             })])
             .range([h, 0]);
 
         var yAxis = d3.svg.axis()
             .scale(y)
             .orient('left')
-            .ticks(5);
+            .ticks(6);
 
         var xAxis = d3.svg.axis()
             .scale(x)
             .orient('bottom')
             .tickValues(data.map(function (d, i) {
-                if (i > 0)
+              //  if (i > 0)
                     return d.date;
-            }).splice(1))
+            }))
+            .tickFormat(d3.time.format("%b %Y"))
             .ticks(4);
+        // var xAxis = d3.svg.axis()
+        //     .scale(x)
+        //     .orient('bottom')
+        //     .tickValues(data.map(function (d, i) {
+        //         if (i > 0)
+        //             return d.date;
+        //     }).splice(1))
+        //     .ticks(4);
 
         var xGrid = d3.svg.axis()
             .scale(x)
@@ -146,8 +168,16 @@ export default class LineChart extends React.Component {
                         <Axis h={h} axis={xAxis} axisType="x"/>
 
                         <path className="line shadow" d={line(data)} strokeLinecap="round"/>
+                        <path className="line shadow" d={line(data1)} strokeLinecap="round"/>
+                        <path className="line shadow" d={line(data2)} strokeLinecap="round"/>
 
                         <Dots data={data} x={x} y={y} showToolTip={::this.showToolTip}
+                              hideToolTip={::this.hideToolTip}/>
+
+                        <Dots data={data1} x={x} y={y} showToolTip={::this.showToolTip}
+                              hideToolTip={::this.hideToolTip}/>
+
+                        <Dots data={data2} x={x} y={y} showToolTip={::this.showToolTip}
                               hideToolTip={::this.hideToolTip}/>
 
                         <ToolTip tooltip={this.state.tooltip}/>

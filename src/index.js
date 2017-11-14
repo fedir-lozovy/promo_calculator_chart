@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {render} from 'react-dom';
 import {Provider} from 'react-redux';
@@ -14,25 +15,25 @@ const store = configureStore({
         accumulatedPricePerToken: [],
         noRiskRate: {
             value: 5,
-            initialValue: 5,
+            defaultValue: 5,
             min: 1,
             max: 7
         },//%
         avgMarketRate: {//>noRiskRate
             value: 20,
-            initialValue: 5,
+            defaultValue: 5,
             min: 1,
             max: 100
         },//%
         betaRiskCoef: {
             value: 1,
-            initialValue: 1,
+            defaultValue: 1,
             min: 0.01,
             max: 2
         },
         investment: {
             value: 2000,
-            initialValue: 2000,
+            defaultValue: 2000,
             min: 500,
             max: 10000000
         },

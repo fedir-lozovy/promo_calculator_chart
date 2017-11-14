@@ -1911,7 +1911,7 @@ function loadLocale(name) {
         try {
             oldLocale = globalLocale._abbr;
             var aliasedRequire = require;
-            __webpack_require__(222)("./" + name);
+            __webpack_require__(203)("./" + name);
             getSetGlobalLocale(oldLocale);
         } catch (e) {}
     }
@@ -4782,8 +4782,8 @@ process.umask = function() { return 0; };
 "use strict";
 
 
-var bind = __webpack_require__(36);
-var isBuffer = __webpack_require__(205);
+var bind = __webpack_require__(154);
+var isBuffer = __webpack_require__(206);
 
 /*global toString:true*/
 
@@ -15267,7 +15267,7 @@ function isPlainObject(value) {
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(2);
-var normalizeHeaderName = __webpack_require__(207);
+var normalizeHeaderName = __webpack_require__(208);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -15283,10 +15283,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(37);
+    adapter = __webpack_require__(155);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(37);
+    adapter = __webpack_require__(155);
   }
   return adapter;
 }
@@ -16507,308 +16507,6 @@ function verifyPlainObject(value, displayName, methodName) {
 /* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.calculate = exports.CALCULATE_ERROR = exports.CALCULATE_SUCCESS = undefined;
-
-var _axios = __webpack_require__(203);
-
-var _axios2 = _interopRequireDefault(_axios);
-
-var _moment = __webpack_require__(0);
-
-var _moment2 = _interopRequireDefault(_moment);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var CALCULATE_SUCCESS = exports.CALCULATE_SUCCESS = 'CALCULATE_SUCCESS';
-var CALCULATE_ERROR = exports.CALCULATE_ERROR = 'CALCULATE_ERROR';
-
-var calculate = exports.calculate = function calculate() {
-    return function (dispatch) {
-        dispatch({
-            type: CALCULATE_SUCCESS
-        });
-    };
-};
-
-/***/ }),
-/* 36 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = function bind(fn, thisArg) {
-  return function wrap() {
-    var args = new Array(arguments.length);
-    for (var i = 0; i < args.length; i++) {
-      args[i] = arguments[i];
-    }
-    return fn.apply(thisArg, args);
-  };
-};
-
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
-
-var utils = __webpack_require__(2);
-var settle = __webpack_require__(208);
-var buildURL = __webpack_require__(210);
-var parseHeaders = __webpack_require__(211);
-var isURLSameOrigin = __webpack_require__(212);
-var createError = __webpack_require__(38);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(213);
-
-module.exports = function xhrAdapter(config) {
-  return new Promise(function dispatchXhrRequest(resolve, reject) {
-    var requestData = config.data;
-    var requestHeaders = config.headers;
-
-    if (utils.isFormData(requestData)) {
-      delete requestHeaders['Content-Type']; // Let the browser set it
-    }
-
-    var request = new XMLHttpRequest();
-    var loadEvent = 'onreadystatechange';
-    var xDomain = false;
-
-    // For IE 8/9 CORS support
-    // Only supports POST and GET calls and doesn't returns the response headers.
-    // DON'T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.
-    if (process.env.NODE_ENV !== 'test' &&
-        typeof window !== 'undefined' &&
-        window.XDomainRequest && !('withCredentials' in request) &&
-        !isURLSameOrigin(config.url)) {
-      request = new window.XDomainRequest();
-      loadEvent = 'onload';
-      xDomain = true;
-      request.onprogress = function handleProgress() {};
-      request.ontimeout = function handleTimeout() {};
-    }
-
-    // HTTP basic authentication
-    if (config.auth) {
-      var username = config.auth.username || '';
-      var password = config.auth.password || '';
-      requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
-    }
-
-    request.open(config.method.toUpperCase(), buildURL(config.url, config.params, config.paramsSerializer), true);
-
-    // Set the request timeout in MS
-    request.timeout = config.timeout;
-
-    // Listen for ready state
-    request[loadEvent] = function handleLoad() {
-      if (!request || (request.readyState !== 4 && !xDomain)) {
-        return;
-      }
-
-      // The request errored out and we didn't get a response, this will be
-      // handled by onerror instead
-      // With one exception: request that using file: protocol, most browsers
-      // will return status as 0 even though it's a successful request
-      if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
-        return;
-      }
-
-      // Prepare the response
-      var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
-      var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
-      var response = {
-        data: responseData,
-        // IE sends 1223 instead of 204 (https://github.com/axios/axios/issues/201)
-        status: request.status === 1223 ? 204 : request.status,
-        statusText: request.status === 1223 ? 'No Content' : request.statusText,
-        headers: responseHeaders,
-        config: config,
-        request: request
-      };
-
-      settle(resolve, reject, response);
-
-      // Clean up request
-      request = null;
-    };
-
-    // Handle low level network errors
-    request.onerror = function handleError() {
-      // Real errors are hidden from us by the browser
-      // onerror should only fire if it's a network error
-      reject(createError('Network Error', config, null, request));
-
-      // Clean up request
-      request = null;
-    };
-
-    // Handle timeout
-    request.ontimeout = function handleTimeout() {
-      reject(createError('timeout of ' + config.timeout + 'ms exceeded', config, 'ECONNABORTED',
-        request));
-
-      // Clean up request
-      request = null;
-    };
-
-    // Add xsrf header
-    // This is only done if running in a standard browser environment.
-    // Specifically not if we're in a web worker, or react-native.
-    if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(214);
-
-      // Add xsrf header
-      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
-          cookies.read(config.xsrfCookieName) :
-          undefined;
-
-      if (xsrfValue) {
-        requestHeaders[config.xsrfHeaderName] = xsrfValue;
-      }
-    }
-
-    // Add headers to the request
-    if ('setRequestHeader' in request) {
-      utils.forEach(requestHeaders, function setRequestHeader(val, key) {
-        if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
-          // Remove Content-Type if data is undefined
-          delete requestHeaders[key];
-        } else {
-          // Otherwise add header to the request
-          request.setRequestHeader(key, val);
-        }
-      });
-    }
-
-    // Add withCredentials to request if needed
-    if (config.withCredentials) {
-      request.withCredentials = true;
-    }
-
-    // Add responseType to request if needed
-    if (config.responseType) {
-      try {
-        request.responseType = config.responseType;
-      } catch (e) {
-        // Expected DOMException thrown by browsers not compatible XMLHttpRequest Level 2.
-        // But, this can be suppressed for 'json' type as it can be parsed by default 'transformResponse' function.
-        if (config.responseType !== 'json') {
-          throw e;
-        }
-      }
-    }
-
-    // Handle progress if needed
-    if (typeof config.onDownloadProgress === 'function') {
-      request.addEventListener('progress', config.onDownloadProgress);
-    }
-
-    // Not all browsers support upload events
-    if (typeof config.onUploadProgress === 'function' && request.upload) {
-      request.upload.addEventListener('progress', config.onUploadProgress);
-    }
-
-    if (config.cancelToken) {
-      // Handle cancellation
-      config.cancelToken.promise.then(function onCanceled(cancel) {
-        if (!request) {
-          return;
-        }
-
-        request.abort();
-        reject(cancel);
-        // Clean up request
-        request = null;
-      });
-    }
-
-    if (requestData === undefined) {
-      requestData = null;
-    }
-
-    // Send the request
-    request.send(requestData);
-  });
-};
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
-
-/***/ }),
-/* 38 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var enhanceError = __webpack_require__(209);
-
-/**
- * Create an Error with the specified message, config, error code, request and response.
- *
- * @param {string} message The error message.
- * @param {Object} config The config.
- * @param {string} [code] The error code (for example, 'ECONNABORTED').
- * @param {Object} [request] The request.
- * @param {Object} [response] The response.
- * @returns {Error} The created error.
- */
-module.exports = function createError(message, config, code, request, response) {
-  var error = new Error(message);
-  return enhanceError(error, config, code, request, response);
-};
-
-
-/***/ }),
-/* 39 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = function isCancel(value) {
-  return !!(value && value.__CANCEL__);
-};
-
-
-/***/ }),
-/* 40 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * A `Cancel` is an object that is thrown when an operation is canceled.
- *
- * @class
- * @param {string=} message The message.
- */
-function Cancel(message) {
-  this.message = message;
-}
-
-Cancel.prototype.toString = function toString() {
-  return 'Cancel' + (this.message ? ': ' + this.message : '');
-};
-
-Cancel.prototype.__CANCEL__ = true;
-
-module.exports = Cancel;
-
-
-/***/ }),
-/* 41 */
-/***/ (function(module, exports, __webpack_require__) {
-
 //! moment.js locale configuration
 //! locale : Afrikaans [af]
 //! author : Werner Mollentze : https://github.com/wernerm
@@ -16884,7 +16582,7 @@ return af;
 
 
 /***/ }),
-/* 42 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17031,7 +16729,7 @@ return ar;
 
 
 /***/ }),
-/* 43 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17095,7 +16793,7 @@ return arDz;
 
 
 /***/ }),
-/* 44 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17159,7 +16857,7 @@ return arKw;
 
 
 /***/ }),
-/* 45 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17290,7 +16988,7 @@ return arLy;
 
 
 /***/ }),
-/* 46 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17355,7 +17053,7 @@ return arMa;
 
 
 /***/ }),
-/* 47 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17465,7 +17163,7 @@ return arSa;
 
 
 /***/ }),
-/* 48 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17529,7 +17227,7 @@ return arTn;
 
 
 /***/ }),
-/* 49 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17639,7 +17337,7 @@ return az;
 
 
 /***/ }),
-/* 50 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17778,7 +17476,7 @@ return be;
 
 
 /***/ }),
-/* 51 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17873,7 +17571,7 @@ return bg;
 
 
 /***/ }),
-/* 52 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17937,7 +17635,7 @@ return bm;
 
 
 /***/ }),
-/* 53 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18061,7 +17759,7 @@ return bn;
 
 
 /***/ }),
-/* 54 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18185,7 +17883,7 @@ return bo;
 
 
 /***/ }),
-/* 55 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18298,7 +17996,7 @@ return br;
 
 
 /***/ }),
-/* 56 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18446,7 +18144,7 @@ return bs;
 
 
 /***/ }),
-/* 57 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18539,7 +18237,7 @@ return ca;
 
 
 /***/ }),
-/* 58 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18716,7 +18414,7 @@ return cs;
 
 
 /***/ }),
-/* 59 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18784,7 +18482,7 @@ return cv;
 
 
 /***/ }),
-/* 60 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18870,7 +18568,7 @@ return cy;
 
 
 /***/ }),
-/* 61 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18935,7 +18633,7 @@ return da;
 
 
 /***/ }),
-/* 62 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19018,7 +18716,7 @@ return de;
 
 
 /***/ }),
-/* 63 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19102,7 +18800,7 @@ return deAt;
 
 
 /***/ }),
-/* 64 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19185,7 +18883,7 @@ return deCh;
 
 
 /***/ }),
-/* 65 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19290,7 +18988,7 @@ return dv;
 
 
 /***/ }),
-/* 66 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19395,7 +19093,7 @@ return el;
 
 
 /***/ }),
-/* 67 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19467,7 +19165,7 @@ return enAu;
 
 
 /***/ }),
-/* 68 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19535,7 +19233,7 @@ return enCa;
 
 
 /***/ }),
-/* 69 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19607,7 +19305,7 @@ return enGb;
 
 
 /***/ }),
-/* 70 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19679,7 +19377,7 @@ return enIe;
 
 
 /***/ }),
-/* 71 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19751,7 +19449,7 @@ return enNz;
 
 
 /***/ }),
-/* 72 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19829,7 +19527,7 @@ return eo;
 
 
 /***/ }),
-/* 73 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19926,7 +19624,7 @@ return es;
 
 
 /***/ }),
-/* 74 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20022,7 +19720,7 @@ return esDo;
 
 
 /***/ }),
-/* 75 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20110,7 +19808,7 @@ return esUs;
 
 
 /***/ }),
-/* 76 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20195,7 +19893,7 @@ return et;
 
 
 /***/ }),
-/* 77 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20266,7 +19964,7 @@ return eu;
 
 
 /***/ }),
-/* 78 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20378,7 +20076,7 @@ return fa;
 
 
 /***/ }),
-/* 79 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20490,7 +20188,7 @@ return fi;
 
 
 /***/ }),
-/* 80 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20555,7 +20253,7 @@ return fo;
 
 
 /***/ }),
-/* 81 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20643,7 +20341,7 @@ return fr;
 
 
 /***/ }),
-/* 82 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20722,7 +20420,7 @@ return frCa;
 
 
 /***/ }),
-/* 83 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20805,7 +20503,7 @@ return frCh;
 
 
 /***/ }),
-/* 84 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20885,7 +20583,7 @@ return fy;
 
 
 /***/ }),
-/* 85 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20966,7 +20664,7 @@ return gd;
 
 
 /***/ }),
-/* 86 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21048,7 +20746,7 @@ return gl;
 
 
 /***/ }),
-/* 87 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21175,7 +20873,7 @@ return gomLatn;
 
 
 /***/ }),
-/* 88 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21304,7 +21002,7 @@ return gu;
 
 
 /***/ }),
-/* 89 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21408,7 +21106,7 @@ return he;
 
 
 /***/ }),
-/* 90 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21537,7 +21235,7 @@ return hi;
 
 
 /***/ }),
-/* 91 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21687,7 +21385,7 @@ return hr;
 
 
 /***/ }),
-/* 92 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21801,7 +21499,7 @@ return hu;
 
 
 /***/ }),
-/* 93 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21901,7 +21599,7 @@ return hyAm;
 
 
 /***/ }),
-/* 94 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21989,7 +21687,7 @@ return id;
 
 
 /***/ }),
-/* 95 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22121,7 +21819,7 @@ return is;
 
 
 /***/ }),
-/* 96 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22196,7 +21894,7 @@ return it;
 
 
 /***/ }),
-/* 97 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22281,7 +21979,7 @@ return ja;
 
 
 /***/ }),
-/* 98 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22369,7 +22067,7 @@ return jv;
 
 
 /***/ }),
-/* 99 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22463,7 +22161,7 @@ return ka;
 
 
 /***/ }),
-/* 100 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22555,7 +22253,7 @@ return kk;
 
 
 /***/ }),
-/* 101 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22618,7 +22316,7 @@ return km;
 
 
 /***/ }),
-/* 102 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22749,7 +22447,7 @@ return kn;
 
 
 /***/ }),
-/* 103 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22837,7 +22535,7 @@ return ko;
 
 
 /***/ }),
-/* 104 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22930,7 +22628,7 @@ return ky;
 
 
 /***/ }),
-/* 105 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23072,7 +22770,7 @@ return lb;
 
 
 /***/ }),
-/* 106 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23147,7 +22845,7 @@ return lo;
 
 
 /***/ }),
-/* 107 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23269,7 +22967,7 @@ return lt;
 
 
 /***/ }),
-/* 108 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23371,7 +23069,7 @@ return lv;
 
 
 /***/ }),
-/* 109 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23487,7 +23185,7 @@ return me;
 
 
 /***/ }),
-/* 110 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23556,7 +23254,7 @@ return mi;
 
 
 /***/ }),
-/* 111 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23651,7 +23349,7 @@ return mk;
 
 
 /***/ }),
-/* 112 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23737,7 +23435,7 @@ return ml;
 
 
 /***/ }),
-/* 113 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23901,7 +23599,7 @@ return mr;
 
 
 /***/ }),
-/* 114 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23988,7 +23686,7 @@ return ms;
 
 
 /***/ }),
-/* 115 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24076,7 +23774,7 @@ return msMy;
 
 
 /***/ }),
-/* 116 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24177,7 +23875,7 @@ return my;
 
 
 /***/ }),
-/* 117 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24245,7 +23943,7 @@ return nb;
 
 
 /***/ }),
-/* 118 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24373,7 +24071,7 @@ return ne;
 
 
 /***/ }),
-/* 119 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24466,7 +24164,7 @@ return nl;
 
 
 /***/ }),
-/* 120 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24559,7 +24257,7 @@ return nlBe;
 
 
 /***/ }),
-/* 121 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24624,7 +24322,7 @@ return nn;
 
 
 /***/ }),
-/* 122 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24753,7 +24451,7 @@ return paIn;
 
 
 /***/ }),
-/* 123 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24882,7 +24580,7 @@ return pl;
 
 
 /***/ }),
-/* 124 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24952,7 +24650,7 @@ return pt;
 
 
 /***/ }),
-/* 125 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25019,7 +24717,7 @@ return ptBr;
 
 
 /***/ }),
-/* 126 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25099,7 +24797,7 @@ return ro;
 
 
 /***/ }),
-/* 127 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25287,7 +24985,7 @@ return ru;
 
 
 /***/ }),
-/* 128 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25390,7 +25088,7 @@ return sd;
 
 
 /***/ }),
-/* 129 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25456,7 +25154,7 @@ return se;
 
 
 /***/ }),
-/* 130 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25532,7 +25230,7 @@ return si;
 
 
 /***/ }),
-/* 131 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25687,7 +25385,7 @@ return sk;
 
 
 /***/ }),
-/* 132 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25854,7 +25552,7 @@ return sl;
 
 
 /***/ }),
-/* 133 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25929,7 +25627,7 @@ return sq;
 
 
 /***/ }),
-/* 134 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26044,7 +25742,7 @@ return sr;
 
 
 /***/ }),
-/* 135 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26159,7 +25857,7 @@ return srCyrl;
 
 
 /***/ }),
-/* 136 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26253,7 +25951,7 @@ return ss;
 
 
 /***/ }),
-/* 137 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26327,7 +26025,7 @@ return sv;
 
 
 /***/ }),
-/* 138 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26391,7 +26089,7 @@ return sw;
 
 
 /***/ }),
-/* 139 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26526,7 +26224,7 @@ return ta;
 
 
 /***/ }),
-/* 140 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26620,7 +26318,7 @@ return te;
 
 
 /***/ }),
-/* 141 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26693,7 +26391,7 @@ return tet;
 
 
 /***/ }),
-/* 142 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26765,7 +26463,7 @@ return th;
 
 
 /***/ }),
-/* 143 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26832,7 +26530,7 @@ return tlPh;
 
 
 /***/ }),
-/* 144 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26957,7 +26655,7 @@ return tlh;
 
 
 /***/ }),
-/* 145 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27052,7 +26750,7 @@ return tr;
 
 
 /***/ }),
-/* 146 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27148,7 +26846,7 @@ return tzl;
 
 
 /***/ }),
-/* 147 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27211,7 +26909,7 @@ return tzm;
 
 
 /***/ }),
-/* 148 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27274,7 +26972,7 @@ return tzmLatn;
 
 
 /***/ }),
-/* 149 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27430,7 +27128,7 @@ return uk;
 
 
 /***/ }),
-/* 150 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27534,7 +27232,7 @@ return ur;
 
 
 /***/ }),
-/* 151 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27597,7 +27295,7 @@ return uz;
 
 
 /***/ }),
-/* 152 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27660,7 +27358,7 @@ return uzLatn;
 
 
 /***/ }),
-/* 153 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27744,7 +27442,7 @@ return vi;
 
 
 /***/ }),
-/* 154 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27817,7 +27515,7 @@ return xPseudo;
 
 
 /***/ }),
-/* 155 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27882,7 +27580,7 @@ return yo;
 
 
 /***/ }),
-/* 156 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27998,7 +27696,7 @@ return zhCn;
 
 
 /***/ }),
-/* 157 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28108,7 +27806,7 @@ return zhHk;
 
 
 /***/ }),
-/* 158 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28217,6 +27915,310 @@ return zhTw;
 
 
 /***/ }),
+/* 153 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.calculate = exports.CALCULATE_ERROR = exports.CALCULATE_SUCCESS = undefined;
+
+var _axios = __webpack_require__(204);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _moment = __webpack_require__(0);
+
+var _moment2 = _interopRequireDefault(_moment);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var CALCULATE_SUCCESS = exports.CALCULATE_SUCCESS = 'CALCULATE_SUCCESS';
+var CALCULATE_ERROR = exports.CALCULATE_ERROR = 'CALCULATE_ERROR';
+
+var calculate = exports.calculate = function calculate(target) {
+    return function (dispatch) {
+        dispatch({
+            type: CALCULATE_SUCCESS,
+            control: target.id,
+            value: target.value
+        });
+    };
+};
+
+/***/ }),
+/* 154 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function bind(fn, thisArg) {
+  return function wrap() {
+    var args = new Array(arguments.length);
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i];
+    }
+    return fn.apply(thisArg, args);
+  };
+};
+
+
+/***/ }),
+/* 155 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+var utils = __webpack_require__(2);
+var settle = __webpack_require__(209);
+var buildURL = __webpack_require__(211);
+var parseHeaders = __webpack_require__(212);
+var isURLSameOrigin = __webpack_require__(213);
+var createError = __webpack_require__(156);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(214);
+
+module.exports = function xhrAdapter(config) {
+  return new Promise(function dispatchXhrRequest(resolve, reject) {
+    var requestData = config.data;
+    var requestHeaders = config.headers;
+
+    if (utils.isFormData(requestData)) {
+      delete requestHeaders['Content-Type']; // Let the browser set it
+    }
+
+    var request = new XMLHttpRequest();
+    var loadEvent = 'onreadystatechange';
+    var xDomain = false;
+
+    // For IE 8/9 CORS support
+    // Only supports POST and GET calls and doesn't returns the response headers.
+    // DON'T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.
+    if (process.env.NODE_ENV !== 'test' &&
+        typeof window !== 'undefined' &&
+        window.XDomainRequest && !('withCredentials' in request) &&
+        !isURLSameOrigin(config.url)) {
+      request = new window.XDomainRequest();
+      loadEvent = 'onload';
+      xDomain = true;
+      request.onprogress = function handleProgress() {};
+      request.ontimeout = function handleTimeout() {};
+    }
+
+    // HTTP basic authentication
+    if (config.auth) {
+      var username = config.auth.username || '';
+      var password = config.auth.password || '';
+      requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
+    }
+
+    request.open(config.method.toUpperCase(), buildURL(config.url, config.params, config.paramsSerializer), true);
+
+    // Set the request timeout in MS
+    request.timeout = config.timeout;
+
+    // Listen for ready state
+    request[loadEvent] = function handleLoad() {
+      if (!request || (request.readyState !== 4 && !xDomain)) {
+        return;
+      }
+
+      // The request errored out and we didn't get a response, this will be
+      // handled by onerror instead
+      // With one exception: request that using file: protocol, most browsers
+      // will return status as 0 even though it's a successful request
+      if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
+        return;
+      }
+
+      // Prepare the response
+      var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
+      var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
+      var response = {
+        data: responseData,
+        // IE sends 1223 instead of 204 (https://github.com/axios/axios/issues/201)
+        status: request.status === 1223 ? 204 : request.status,
+        statusText: request.status === 1223 ? 'No Content' : request.statusText,
+        headers: responseHeaders,
+        config: config,
+        request: request
+      };
+
+      settle(resolve, reject, response);
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle low level network errors
+    request.onerror = function handleError() {
+      // Real errors are hidden from us by the browser
+      // onerror should only fire if it's a network error
+      reject(createError('Network Error', config, null, request));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle timeout
+    request.ontimeout = function handleTimeout() {
+      reject(createError('timeout of ' + config.timeout + 'ms exceeded', config, 'ECONNABORTED',
+        request));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Add xsrf header
+    // This is only done if running in a standard browser environment.
+    // Specifically not if we're in a web worker, or react-native.
+    if (utils.isStandardBrowserEnv()) {
+      var cookies = __webpack_require__(215);
+
+      // Add xsrf header
+      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
+          cookies.read(config.xsrfCookieName) :
+          undefined;
+
+      if (xsrfValue) {
+        requestHeaders[config.xsrfHeaderName] = xsrfValue;
+      }
+    }
+
+    // Add headers to the request
+    if ('setRequestHeader' in request) {
+      utils.forEach(requestHeaders, function setRequestHeader(val, key) {
+        if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
+          // Remove Content-Type if data is undefined
+          delete requestHeaders[key];
+        } else {
+          // Otherwise add header to the request
+          request.setRequestHeader(key, val);
+        }
+      });
+    }
+
+    // Add withCredentials to request if needed
+    if (config.withCredentials) {
+      request.withCredentials = true;
+    }
+
+    // Add responseType to request if needed
+    if (config.responseType) {
+      try {
+        request.responseType = config.responseType;
+      } catch (e) {
+        // Expected DOMException thrown by browsers not compatible XMLHttpRequest Level 2.
+        // But, this can be suppressed for 'json' type as it can be parsed by default 'transformResponse' function.
+        if (config.responseType !== 'json') {
+          throw e;
+        }
+      }
+    }
+
+    // Handle progress if needed
+    if (typeof config.onDownloadProgress === 'function') {
+      request.addEventListener('progress', config.onDownloadProgress);
+    }
+
+    // Not all browsers support upload events
+    if (typeof config.onUploadProgress === 'function' && request.upload) {
+      request.upload.addEventListener('progress', config.onUploadProgress);
+    }
+
+    if (config.cancelToken) {
+      // Handle cancellation
+      config.cancelToken.promise.then(function onCanceled(cancel) {
+        if (!request) {
+          return;
+        }
+
+        request.abort();
+        reject(cancel);
+        // Clean up request
+        request = null;
+      });
+    }
+
+    if (requestData === undefined) {
+      requestData = null;
+    }
+
+    // Send the request
+    request.send(requestData);
+  });
+};
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+
+/***/ }),
+/* 156 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var enhanceError = __webpack_require__(210);
+
+/**
+ * Create an Error with the specified message, config, error code, request and response.
+ *
+ * @param {string} message The error message.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ * @param {Object} [request] The request.
+ * @param {Object} [response] The response.
+ * @returns {Error} The created error.
+ */
+module.exports = function createError(message, config, code, request, response) {
+  var error = new Error(message);
+  return enhanceError(error, config, code, request, response);
+};
+
+
+/***/ }),
+/* 157 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function isCancel(value) {
+  return !!(value && value.__CANCEL__);
+};
+
+
+/***/ }),
+/* 158 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * A `Cancel` is an object that is thrown when an operation is canceled.
+ *
+ * @class
+ * @param {string=} message The message.
+ */
+function Cancel(message) {
+  this.message = message;
+}
+
+Cancel.prototype.toString = function toString() {
+  return 'Cancel' + (this.message ? ': ' + this.message : '');
+};
+
+Cancel.prototype.__CANCEL__ = true;
+
+module.exports = Cancel;
+
+
+/***/ }),
 /* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -28257,25 +28259,25 @@ var store = (0, _configureStore2.default)({
         accumulatedPricePerToken: [],
         noRiskRate: {
             value: 5,
-            initialValue: 5,
+            defaultValue: 5,
             min: 1,
             max: 7
         }, //%
         avgMarketRate: { //>noRiskRate
             value: 20,
-            initialValue: 5,
+            defaultValue: 5,
             min: 1,
             max: 100
         }, //%
         betaRiskCoef: {
             value: 1,
-            initialValue: 1,
+            defaultValue: 1,
             min: 0.01,
             max: 2
         },
         investment: {
             value: 2000,
-            initialValue: 2000,
+            defaultValue: 2000,
             min: 500,
             max: 10000000
         },
@@ -47384,7 +47386,7 @@ var _LineChart = __webpack_require__(198);
 
 var _LineChart2 = _interopRequireDefault(_LineChart);
 
-var _app = __webpack_require__(35);
+var _app = __webpack_require__(153);
 
 var appActions = _interopRequireWildcard(_app);
 
@@ -47411,8 +47413,15 @@ var App = exports.App = function (_React$Component) {
 
     _createClass(App, [{
         key: 'calculate',
-        value: function calculate() {
-            this.props.calculate();
+        value: function calculate(e) {
+            var chArr = [];
+            if (parseFloat(e.target.value) < parseFloat(e.target.min)) e.target.value = e.target.min;
+            if (parseFloat(e.target.value) > parseFloat(e.target.max)) e.target.value = e.target.max;
+            if (e.target.id === 'avgMarketRate') if (parseFloat(e.target.value) < parseFloat(this.props.noRiskRate.value)) e.target.value = this.props.noRiskRate.value;
+            if (e.target.id === 'noRiskRate') if (parseFloat(e.target.value) > parseFloat(this.props.avgMarketRate.value)) {
+                e.target.value = this.props.avgMarketRate.value;
+            }
+            this.props.calculate(e.target);
         }
     }, {
         key: 'render',
@@ -47428,19 +47437,6 @@ var App = exports.App = function (_React$Component) {
                         'div',
                         { className: 'col-xs-12' },
                         _react2.default.createElement(
-                            'button',
-                            { className: 'btn btn-primary', onClick: this.calculate.bind(this) },
-                            'Calculate'
-                        )
-                    )
-                ),
-                _react2.default.createElement(
-                    'div',
-                    { className: 'row' },
-                    _react2.default.createElement(
-                        'div',
-                        { className: 'col-xs-12' },
-                        _react2.default.createElement(
                             'div',
                             { className: 'top', id: 'top-line-chart' },
                             _react2.default.createElement(
@@ -47448,9 +47444,79 @@ var App = exports.App = function (_React$Component) {
                                 null,
                                 _react2.default.createElement(
                                     'div',
+                                    { className: 'col-xs-12' },
+                                    '\xA0'
+                                ),
+                                _react2.default.createElement(
+                                    'div',
+                                    { className: 'col-xs-12' },
+                                    _react2.default.createElement(
+                                        'div',
+                                        { className: 'col-xs-3' },
+                                        _react2.default.createElement(
+                                            'label',
+                                            { className: 'form-label' },
+                                            '\u0415\u0441\u043B\u0438 USER \u043A\u0443\u043F\u0438\u0442 \u0442\u043E\u043A\u0435\u043D\u043E\u0432 \u043F\u043E \u0446\u0435\u043D\u0435 1$=1EXO \u043D\u0430 \u0441\u0443\u043C\u043C\u0443'
+                                        ),
+                                        _react2.default.createElement('input', { type: 'number', className: 'form-control',
+                                            defaultValue: this.props.investment.value, min: this.props.investment.min,
+                                            max: this.props.investment.max,
+                                            id: 'investment', onChange: this.calculate.bind(this) })
+                                    ),
+                                    _react2.default.createElement(
+                                        'div',
+                                        { className: 'col-xs-9' },
+                                        _react2.default.createElement(
+                                            'div',
+                                            { className: 'col-xs-4 pull-right' },
+                                            _react2.default.createElement(
+                                                'label',
+                                                { className: 'form-label' },
+                                                '\u0411\u0435\u0442\u0430 \u043A\u043E\u044D\u0444\u0444. \u0440\u0438\u0441\u043A\u0430 (\u0447\u0435\u043C \u0432\u044B\u0448\u0435, \u0442\u0435\u043C \u0431\u043E\u043B\u044C\u0448\u0438\u0439 \u0440\u0438\u0441\u043A)'
+                                            ),
+                                            _react2.default.createElement('input', { type: 'number', className: 'form-control', id: 'betaRiskCoef',
+                                                defaultValue: this.props.betaRiskCoef.value,
+                                                min: this.props.betaRiskCoef.min,
+                                                max: this.props.betaRiskCoef.max, onChange: this.calculate.bind(this) })
+                                        ),
+                                        _react2.default.createElement(
+                                            'div',
+                                            { className: 'col-xs-3 pull-right' },
+                                            _react2.default.createElement(
+                                                'label',
+                                                { className: 'form-label' },
+                                                '\u0420\u044B\u043D\u043E\u0447\u043D\u0430\u044F \u0441\u0440\u0435\u0434\u043D\u044F\u044F \u0434\u043E\u0445\u043E\u0434\u043D\u043E\u0441\u0442\u044C, \u0433\u043E\u0434\u043E\u0432\u0430\u044F, %'
+                                            ),
+                                            _react2.default.createElement('input', { type: 'number', className: 'form-control', id: 'avgMarketRate',
+                                                defaultValue: this.props.avgMarketRate.value,
+                                                min: this.props.avgMarketRate.min,
+                                                max: this.props.avgMarketRate.max, onChange: this.calculate.bind(this) })
+                                        ),
+                                        _react2.default.createElement(
+                                            'div',
+                                            { className: 'col-xs-3 pull-right' },
+                                            _react2.default.createElement(
+                                                'label',
+                                                { className: 'form-label' },
+                                                '\u0411\u0435\u0437\u0440\u0438\u0441\u043A\u043E\u0432\u0430\u044F \u0441\u0442\u0430\u0432\u043A\u0430, \u0433\u043E\u0434\u043E\u0432\u0430\u044F, %'
+                                            ),
+                                            _react2.default.createElement('input', { type: 'number', className: 'form-control', id: 'noRiskRate',
+                                                defaultValue: this.props.noRiskRate.value,
+                                                min: this.props.noRiskRate.min,
+                                                max: this.props.noRiskRate.max, onChange: this.calculate.bind(this) })
+                                        )
+                                    )
+                                )
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                null,
+                                _react2.default.createElement(
+                                    'div',
                                     { className: 'pad bottom-left-svg' },
                                     this.props.resultData && this.props.resultData.length ? _react2.default.createElement(_LineChart2.default, { width: 1300, height: '600', chartId: 'v1_chart',
-                                        data: this.props.resultData }) : 'no data'
+                                        data: this.props.resultData, data1: this.props.resultDataPart1,
+                                        data2: this.props.resultDataPart2 }) : ''
                                 )
                             )
                         )
@@ -47518,6 +47584,10 @@ var _ToolTip2 = _interopRequireDefault(_ToolTip);
 var _Dots = __webpack_require__(202);
 
 var _Dots2 = _interopRequireDefault(_Dots);
+
+var _moment = __webpack_require__(0);
+
+var _moment2 = _interopRequireDefault(_moment);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -47588,7 +47658,7 @@ var LineChart = function (_React$Component) {
         key: 'render',
         value: function render() {
             var data = this.props.data;
-            var margin = { top: 5, right: 50, bottom: 20, left: 50 },
+            var margin = { top: 5, right: 50, bottom: 20, left: 85 },
                 w = this.state.width - (margin.left + margin.right),
                 h = this.props.height - (margin.top + margin.bottom);
             var parseDate = d3.time.format("%d.%m.%Y").parse;
@@ -47596,7 +47666,19 @@ var LineChart = function (_React$Component) {
             data = data.map(function (d) {
                 return {
                     date: parseDate(d.date),
-                    count: parseFloat(d.count.replace(',', '.'))
+                    count: d.count
+                };
+            });
+            var data1 = this.props.data1.map(function (d) {
+                return {
+                    date: parseDate(d.date),
+                    count: d.count
+                };
+            });
+            var data2 = this.props.data2.map(function (d) {
+                return {
+                    date: parseDate(d.date),
+                    count: d.count
                 };
             });
 
@@ -47605,14 +47687,23 @@ var LineChart = function (_React$Component) {
             })).rangeRound([0, w]);
 
             var y = d3.scale.linear().domain([0, d3.max(data, function (d) {
-                return d.count + 1;
+                return d.count + parseInt(100 * d.count / 10) / 100;
             })]).range([h, 0]);
 
-            var yAxis = d3.svg.axis().scale(y).orient('left').ticks(5);
+            var yAxis = d3.svg.axis().scale(y).orient('left').ticks(6);
 
             var xAxis = d3.svg.axis().scale(x).orient('bottom').tickValues(data.map(function (d, i) {
-                if (i > 0) return d.date;
-            }).splice(1)).ticks(4);
+                //  if (i > 0)
+                return d.date;
+            })).tickFormat(d3.time.format("%b %Y")).ticks(4);
+            // var xAxis = d3.svg.axis()
+            //     .scale(x)
+            //     .orient('bottom')
+            //     .tickValues(data.map(function (d, i) {
+            //         if (i > 0)
+            //             return d.date;
+            //     }).splice(1))
+            //     .ticks(4);
 
             var xGrid = d3.svg.axis().scale(x).orient('bottom').ticks(5).tickSize(-h, 0, 0).tickFormat("");
 
@@ -47639,7 +47730,13 @@ var LineChart = function (_React$Component) {
                         _react2.default.createElement(_Axis2.default, { h: h, axis: yAxis, axisType: 'y' }),
                         _react2.default.createElement(_Axis2.default, { h: h, axis: xAxis, axisType: 'x' }),
                         _react2.default.createElement('path', { className: 'line shadow', d: line(data), strokeLinecap: 'round' }),
+                        _react2.default.createElement('path', { className: 'line shadow', d: line(data1), strokeLinecap: 'round' }),
+                        _react2.default.createElement('path', { className: 'line shadow', d: line(data2), strokeLinecap: 'round' }),
                         _react2.default.createElement(_Dots2.default, { data: data, x: x, y: y, showToolTip: this.showToolTip.bind(this),
+                            hideToolTip: this.hideToolTip.bind(this) }),
+                        _react2.default.createElement(_Dots2.default, { data: data1, x: x, y: y, showToolTip: this.showToolTip.bind(this),
+                            hideToolTip: this.hideToolTip.bind(this) }),
+                        _react2.default.createElement(_Dots2.default, { data: data2, x: x, y: y, showToolTip: this.showToolTip.bind(this),
                             hideToolTip: this.hideToolTip.bind(this) }),
                         _react2.default.createElement(_ToolTip2.default, { tooltip: this.state.tooltip })
                     )
@@ -47950,7 +48047,7 @@ var ToolTip = function (_React$Component) {
                         'tspan',
                         { x: '0', textAnchor: 'middle', dy: '25', fontSize: '20px',
                             fill: '#a9f3ff' },
-                        this.props.tooltip.data.value + " $"
+                        parseInt(this.props.tooltip.data.value) + " $"
                     )
                 )
             );
@@ -48015,16 +48112,16 @@ var Dots = function (_React$Component) {
             var _this2 = this;
 
             //remove last & first point
-            var data = this.props.data.splice(1);
-            data.pop();
+            var data = this.props.data;
+            //data.pop();
 
             var circles = data.map(function (d, i) {
                 var _context;
 
-                return _react2.default.createElement('circle', { className: 'dot', r: '7', cx: _this2.props.x(d.date), cy: _this2.props.y(d.income), fill: '#7dc7f4',
+                return _react2.default.createElement('circle', { className: 'dot', r: '7', cx: _this2.props.x(d.date), cy: _this2.props.y(d.count), fill: '#7dc7f4',
                     stroke: '#3f5175', strokeWidth: '5px', key: i,
                     onMouseOver: (_context = _this2.props).showToolTip.bind(_context), onMouseOut: (_context = _this2.props).hideToolTip.bind(_context),
-                    'data-key': d3.time.format("%b %e")(d.date), 'data-value': d.income });
+                    'data-key': d3.time.format("%b %Y")(d.date), 'data-value': d.count });
             });
 
             return _react2.default.createElement(
@@ -48049,18 +48146,276 @@ exports.default = Dots;
 /* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(204);
+var map = {
+	"./af": 35,
+	"./af.js": 35,
+	"./ar": 36,
+	"./ar-dz": 37,
+	"./ar-dz.js": 37,
+	"./ar-kw": 38,
+	"./ar-kw.js": 38,
+	"./ar-ly": 39,
+	"./ar-ly.js": 39,
+	"./ar-ma": 40,
+	"./ar-ma.js": 40,
+	"./ar-sa": 41,
+	"./ar-sa.js": 41,
+	"./ar-tn": 42,
+	"./ar-tn.js": 42,
+	"./ar.js": 36,
+	"./az": 43,
+	"./az.js": 43,
+	"./be": 44,
+	"./be.js": 44,
+	"./bg": 45,
+	"./bg.js": 45,
+	"./bm": 46,
+	"./bm.js": 46,
+	"./bn": 47,
+	"./bn.js": 47,
+	"./bo": 48,
+	"./bo.js": 48,
+	"./br": 49,
+	"./br.js": 49,
+	"./bs": 50,
+	"./bs.js": 50,
+	"./ca": 51,
+	"./ca.js": 51,
+	"./cs": 52,
+	"./cs.js": 52,
+	"./cv": 53,
+	"./cv.js": 53,
+	"./cy": 54,
+	"./cy.js": 54,
+	"./da": 55,
+	"./da.js": 55,
+	"./de": 56,
+	"./de-at": 57,
+	"./de-at.js": 57,
+	"./de-ch": 58,
+	"./de-ch.js": 58,
+	"./de.js": 56,
+	"./dv": 59,
+	"./dv.js": 59,
+	"./el": 60,
+	"./el.js": 60,
+	"./en-au": 61,
+	"./en-au.js": 61,
+	"./en-ca": 62,
+	"./en-ca.js": 62,
+	"./en-gb": 63,
+	"./en-gb.js": 63,
+	"./en-ie": 64,
+	"./en-ie.js": 64,
+	"./en-nz": 65,
+	"./en-nz.js": 65,
+	"./eo": 66,
+	"./eo.js": 66,
+	"./es": 67,
+	"./es-do": 68,
+	"./es-do.js": 68,
+	"./es-us": 69,
+	"./es-us.js": 69,
+	"./es.js": 67,
+	"./et": 70,
+	"./et.js": 70,
+	"./eu": 71,
+	"./eu.js": 71,
+	"./fa": 72,
+	"./fa.js": 72,
+	"./fi": 73,
+	"./fi.js": 73,
+	"./fo": 74,
+	"./fo.js": 74,
+	"./fr": 75,
+	"./fr-ca": 76,
+	"./fr-ca.js": 76,
+	"./fr-ch": 77,
+	"./fr-ch.js": 77,
+	"./fr.js": 75,
+	"./fy": 78,
+	"./fy.js": 78,
+	"./gd": 79,
+	"./gd.js": 79,
+	"./gl": 80,
+	"./gl.js": 80,
+	"./gom-latn": 81,
+	"./gom-latn.js": 81,
+	"./gu": 82,
+	"./gu.js": 82,
+	"./he": 83,
+	"./he.js": 83,
+	"./hi": 84,
+	"./hi.js": 84,
+	"./hr": 85,
+	"./hr.js": 85,
+	"./hu": 86,
+	"./hu.js": 86,
+	"./hy-am": 87,
+	"./hy-am.js": 87,
+	"./id": 88,
+	"./id.js": 88,
+	"./is": 89,
+	"./is.js": 89,
+	"./it": 90,
+	"./it.js": 90,
+	"./ja": 91,
+	"./ja.js": 91,
+	"./jv": 92,
+	"./jv.js": 92,
+	"./ka": 93,
+	"./ka.js": 93,
+	"./kk": 94,
+	"./kk.js": 94,
+	"./km": 95,
+	"./km.js": 95,
+	"./kn": 96,
+	"./kn.js": 96,
+	"./ko": 97,
+	"./ko.js": 97,
+	"./ky": 98,
+	"./ky.js": 98,
+	"./lb": 99,
+	"./lb.js": 99,
+	"./lo": 100,
+	"./lo.js": 100,
+	"./lt": 101,
+	"./lt.js": 101,
+	"./lv": 102,
+	"./lv.js": 102,
+	"./me": 103,
+	"./me.js": 103,
+	"./mi": 104,
+	"./mi.js": 104,
+	"./mk": 105,
+	"./mk.js": 105,
+	"./ml": 106,
+	"./ml.js": 106,
+	"./mr": 107,
+	"./mr.js": 107,
+	"./ms": 108,
+	"./ms-my": 109,
+	"./ms-my.js": 109,
+	"./ms.js": 108,
+	"./my": 110,
+	"./my.js": 110,
+	"./nb": 111,
+	"./nb.js": 111,
+	"./ne": 112,
+	"./ne.js": 112,
+	"./nl": 113,
+	"./nl-be": 114,
+	"./nl-be.js": 114,
+	"./nl.js": 113,
+	"./nn": 115,
+	"./nn.js": 115,
+	"./pa-in": 116,
+	"./pa-in.js": 116,
+	"./pl": 117,
+	"./pl.js": 117,
+	"./pt": 118,
+	"./pt-br": 119,
+	"./pt-br.js": 119,
+	"./pt.js": 118,
+	"./ro": 120,
+	"./ro.js": 120,
+	"./ru": 121,
+	"./ru.js": 121,
+	"./sd": 122,
+	"./sd.js": 122,
+	"./se": 123,
+	"./se.js": 123,
+	"./si": 124,
+	"./si.js": 124,
+	"./sk": 125,
+	"./sk.js": 125,
+	"./sl": 126,
+	"./sl.js": 126,
+	"./sq": 127,
+	"./sq.js": 127,
+	"./sr": 128,
+	"./sr-cyrl": 129,
+	"./sr-cyrl.js": 129,
+	"./sr.js": 128,
+	"./ss": 130,
+	"./ss.js": 130,
+	"./sv": 131,
+	"./sv.js": 131,
+	"./sw": 132,
+	"./sw.js": 132,
+	"./ta": 133,
+	"./ta.js": 133,
+	"./te": 134,
+	"./te.js": 134,
+	"./tet": 135,
+	"./tet.js": 135,
+	"./th": 136,
+	"./th.js": 136,
+	"./tl-ph": 137,
+	"./tl-ph.js": 137,
+	"./tlh": 138,
+	"./tlh.js": 138,
+	"./tr": 139,
+	"./tr.js": 139,
+	"./tzl": 140,
+	"./tzl.js": 140,
+	"./tzm": 141,
+	"./tzm-latn": 142,
+	"./tzm-latn.js": 142,
+	"./tzm.js": 141,
+	"./uk": 143,
+	"./uk.js": 143,
+	"./ur": 144,
+	"./ur.js": 144,
+	"./uz": 145,
+	"./uz-latn": 146,
+	"./uz-latn.js": 146,
+	"./uz.js": 145,
+	"./vi": 147,
+	"./vi.js": 147,
+	"./x-pseudo": 148,
+	"./x-pseudo.js": 148,
+	"./yo": 149,
+	"./yo.js": 149,
+	"./zh-cn": 150,
+	"./zh-cn.js": 150,
+	"./zh-hk": 151,
+	"./zh-hk.js": 151,
+	"./zh-tw": 152,
+	"./zh-tw.js": 152
+};
+function webpackContext(req) {
+	return __webpack_require__(webpackContextResolve(req));
+};
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) // check for number or string
+		throw new Error("Cannot find module '" + req + "'.");
+	return id;
+};
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = 203;
 
 /***/ }),
 /* 204 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(205);
+
+/***/ }),
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(2);
-var bind = __webpack_require__(36);
-var Axios = __webpack_require__(206);
+var bind = __webpack_require__(154);
+var Axios = __webpack_require__(207);
 var defaults = __webpack_require__(17);
 
 /**
@@ -48094,15 +48449,15 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(40);
-axios.CancelToken = __webpack_require__(220);
-axios.isCancel = __webpack_require__(39);
+axios.Cancel = __webpack_require__(158);
+axios.CancelToken = __webpack_require__(221);
+axios.isCancel = __webpack_require__(157);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(221);
+axios.spread = __webpack_require__(222);
 
 module.exports = axios;
 
@@ -48111,7 +48466,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 205 */
+/* 206 */
 /***/ (function(module, exports) {
 
 /*!
@@ -48138,7 +48493,7 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
-/* 206 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48146,8 +48501,8 @@ function isSlowBuffer (obj) {
 
 var defaults = __webpack_require__(17);
 var utils = __webpack_require__(2);
-var InterceptorManager = __webpack_require__(215);
-var dispatchRequest = __webpack_require__(216);
+var InterceptorManager = __webpack_require__(216);
+var dispatchRequest = __webpack_require__(217);
 
 /**
  * Create a new instance of Axios
@@ -48224,7 +48579,7 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 207 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48243,13 +48598,13 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 208 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var createError = __webpack_require__(38);
+var createError = __webpack_require__(156);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -48276,7 +48631,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 209 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48304,7 +48659,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 210 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48379,7 +48734,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 211 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48439,7 +48794,7 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 212 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48514,7 +48869,7 @@ module.exports = (
 
 
 /***/ }),
-/* 213 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48557,7 +48912,7 @@ module.exports = btoa;
 
 
 /***/ }),
-/* 214 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48617,7 +48972,7 @@ module.exports = (
 
 
 /***/ }),
-/* 215 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48676,18 +49031,18 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 216 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(2);
-var transformData = __webpack_require__(217);
-var isCancel = __webpack_require__(39);
+var transformData = __webpack_require__(218);
+var isCancel = __webpack_require__(157);
 var defaults = __webpack_require__(17);
-var isAbsoluteURL = __webpack_require__(218);
-var combineURLs = __webpack_require__(219);
+var isAbsoluteURL = __webpack_require__(219);
+var combineURLs = __webpack_require__(220);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -48769,7 +49124,7 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 217 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48796,7 +49151,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 218 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48817,7 +49172,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 219 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48838,13 +49193,13 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 220 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Cancel = __webpack_require__(40);
+var Cancel = __webpack_require__(158);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -48902,7 +49257,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 221 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48934,264 +49289,6 @@ module.exports = function spread(callback) {
   };
 };
 
-
-/***/ }),
-/* 222 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var map = {
-	"./af": 41,
-	"./af.js": 41,
-	"./ar": 42,
-	"./ar-dz": 43,
-	"./ar-dz.js": 43,
-	"./ar-kw": 44,
-	"./ar-kw.js": 44,
-	"./ar-ly": 45,
-	"./ar-ly.js": 45,
-	"./ar-ma": 46,
-	"./ar-ma.js": 46,
-	"./ar-sa": 47,
-	"./ar-sa.js": 47,
-	"./ar-tn": 48,
-	"./ar-tn.js": 48,
-	"./ar.js": 42,
-	"./az": 49,
-	"./az.js": 49,
-	"./be": 50,
-	"./be.js": 50,
-	"./bg": 51,
-	"./bg.js": 51,
-	"./bm": 52,
-	"./bm.js": 52,
-	"./bn": 53,
-	"./bn.js": 53,
-	"./bo": 54,
-	"./bo.js": 54,
-	"./br": 55,
-	"./br.js": 55,
-	"./bs": 56,
-	"./bs.js": 56,
-	"./ca": 57,
-	"./ca.js": 57,
-	"./cs": 58,
-	"./cs.js": 58,
-	"./cv": 59,
-	"./cv.js": 59,
-	"./cy": 60,
-	"./cy.js": 60,
-	"./da": 61,
-	"./da.js": 61,
-	"./de": 62,
-	"./de-at": 63,
-	"./de-at.js": 63,
-	"./de-ch": 64,
-	"./de-ch.js": 64,
-	"./de.js": 62,
-	"./dv": 65,
-	"./dv.js": 65,
-	"./el": 66,
-	"./el.js": 66,
-	"./en-au": 67,
-	"./en-au.js": 67,
-	"./en-ca": 68,
-	"./en-ca.js": 68,
-	"./en-gb": 69,
-	"./en-gb.js": 69,
-	"./en-ie": 70,
-	"./en-ie.js": 70,
-	"./en-nz": 71,
-	"./en-nz.js": 71,
-	"./eo": 72,
-	"./eo.js": 72,
-	"./es": 73,
-	"./es-do": 74,
-	"./es-do.js": 74,
-	"./es-us": 75,
-	"./es-us.js": 75,
-	"./es.js": 73,
-	"./et": 76,
-	"./et.js": 76,
-	"./eu": 77,
-	"./eu.js": 77,
-	"./fa": 78,
-	"./fa.js": 78,
-	"./fi": 79,
-	"./fi.js": 79,
-	"./fo": 80,
-	"./fo.js": 80,
-	"./fr": 81,
-	"./fr-ca": 82,
-	"./fr-ca.js": 82,
-	"./fr-ch": 83,
-	"./fr-ch.js": 83,
-	"./fr.js": 81,
-	"./fy": 84,
-	"./fy.js": 84,
-	"./gd": 85,
-	"./gd.js": 85,
-	"./gl": 86,
-	"./gl.js": 86,
-	"./gom-latn": 87,
-	"./gom-latn.js": 87,
-	"./gu": 88,
-	"./gu.js": 88,
-	"./he": 89,
-	"./he.js": 89,
-	"./hi": 90,
-	"./hi.js": 90,
-	"./hr": 91,
-	"./hr.js": 91,
-	"./hu": 92,
-	"./hu.js": 92,
-	"./hy-am": 93,
-	"./hy-am.js": 93,
-	"./id": 94,
-	"./id.js": 94,
-	"./is": 95,
-	"./is.js": 95,
-	"./it": 96,
-	"./it.js": 96,
-	"./ja": 97,
-	"./ja.js": 97,
-	"./jv": 98,
-	"./jv.js": 98,
-	"./ka": 99,
-	"./ka.js": 99,
-	"./kk": 100,
-	"./kk.js": 100,
-	"./km": 101,
-	"./km.js": 101,
-	"./kn": 102,
-	"./kn.js": 102,
-	"./ko": 103,
-	"./ko.js": 103,
-	"./ky": 104,
-	"./ky.js": 104,
-	"./lb": 105,
-	"./lb.js": 105,
-	"./lo": 106,
-	"./lo.js": 106,
-	"./lt": 107,
-	"./lt.js": 107,
-	"./lv": 108,
-	"./lv.js": 108,
-	"./me": 109,
-	"./me.js": 109,
-	"./mi": 110,
-	"./mi.js": 110,
-	"./mk": 111,
-	"./mk.js": 111,
-	"./ml": 112,
-	"./ml.js": 112,
-	"./mr": 113,
-	"./mr.js": 113,
-	"./ms": 114,
-	"./ms-my": 115,
-	"./ms-my.js": 115,
-	"./ms.js": 114,
-	"./my": 116,
-	"./my.js": 116,
-	"./nb": 117,
-	"./nb.js": 117,
-	"./ne": 118,
-	"./ne.js": 118,
-	"./nl": 119,
-	"./nl-be": 120,
-	"./nl-be.js": 120,
-	"./nl.js": 119,
-	"./nn": 121,
-	"./nn.js": 121,
-	"./pa-in": 122,
-	"./pa-in.js": 122,
-	"./pl": 123,
-	"./pl.js": 123,
-	"./pt": 124,
-	"./pt-br": 125,
-	"./pt-br.js": 125,
-	"./pt.js": 124,
-	"./ro": 126,
-	"./ro.js": 126,
-	"./ru": 127,
-	"./ru.js": 127,
-	"./sd": 128,
-	"./sd.js": 128,
-	"./se": 129,
-	"./se.js": 129,
-	"./si": 130,
-	"./si.js": 130,
-	"./sk": 131,
-	"./sk.js": 131,
-	"./sl": 132,
-	"./sl.js": 132,
-	"./sq": 133,
-	"./sq.js": 133,
-	"./sr": 134,
-	"./sr-cyrl": 135,
-	"./sr-cyrl.js": 135,
-	"./sr.js": 134,
-	"./ss": 136,
-	"./ss.js": 136,
-	"./sv": 137,
-	"./sv.js": 137,
-	"./sw": 138,
-	"./sw.js": 138,
-	"./ta": 139,
-	"./ta.js": 139,
-	"./te": 140,
-	"./te.js": 140,
-	"./tet": 141,
-	"./tet.js": 141,
-	"./th": 142,
-	"./th.js": 142,
-	"./tl-ph": 143,
-	"./tl-ph.js": 143,
-	"./tlh": 144,
-	"./tlh.js": 144,
-	"./tr": 145,
-	"./tr.js": 145,
-	"./tzl": 146,
-	"./tzl.js": 146,
-	"./tzm": 147,
-	"./tzm-latn": 148,
-	"./tzm-latn.js": 148,
-	"./tzm.js": 147,
-	"./uk": 149,
-	"./uk.js": 149,
-	"./ur": 150,
-	"./ur.js": 150,
-	"./uz": 151,
-	"./uz-latn": 152,
-	"./uz-latn.js": 152,
-	"./uz.js": 151,
-	"./vi": 153,
-	"./vi.js": 153,
-	"./x-pseudo": 154,
-	"./x-pseudo.js": 154,
-	"./yo": 155,
-	"./yo.js": 155,
-	"./zh-cn": 156,
-	"./zh-cn.js": 156,
-	"./zh-hk": 157,
-	"./zh-hk.js": 157,
-	"./zh-tw": 158,
-	"./zh-tw.js": 158
-};
-function webpackContext(req) {
-	return __webpack_require__(webpackContextResolve(req));
-};
-function webpackContextResolve(req) {
-	var id = map[req];
-	if(!(id + 1)) // check for number or string
-		throw new Error("Cannot find module '" + req + "'.");
-	return id;
-};
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = 222;
 
 /***/ }),
 /* 223 */
@@ -49289,7 +49386,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 exports.default = app;
 
-var _app = __webpack_require__(35);
+var _app = __webpack_require__(153);
 
 var _moment = __webpack_require__(0);
 
@@ -49303,24 +49400,28 @@ function app() {
     var action = arguments[1];
 
     switch (action.type) {
-        case _app.CALCULATE_SUCCESS:
-            state = _extends({}, state, {
-                accumulatedPricePerToken: calculateaccumulatedPricePerToken(state)
-            });
-            state = _extends({}, state, {
-                espectedData: calculateEspectedData(state)
-            });
-            state = _extends({}, state, {
-                resultDataPart1: calculateResultDataPart1(state)
-            });
-            state = _extends({}, state, {
-                resultDataPart2: calculateResultDataPart2(state)
-            });
-            console.log(state);
-            return _extends({}, state);
-            break;
         default:
-            return state;
+        case _app.CALCULATE_SUCCESS:
+
+            if (action && action.control && action.value) state[action.control].value = action.value;
+            if (state.initialData) {
+                state = _extends({}, state, {
+                    accumulatedPricePerToken: calculateaccumulatedPricePerToken(state)
+                });
+                state = _extends({}, state, {
+                    espectedData: calculateEspectedData(state)
+                });
+                state = _extends({}, state, {
+                    resultDataPart1: calculateResultDataPart1(state)
+                });
+                state = _extends({}, state, {
+                    resultDataPart2: calculateResultDataPart2(state)
+                });
+                state = _extends({}, state, {
+                    resultData: calculateResultData(state)
+                });
+            }
+            return _extends({}, state);
             break;
     }
 }
@@ -49378,6 +49479,18 @@ function calculateResultDataPart2(state) {
         if (d.date && mdate.format('MM') == '12' && mdate.format('YYYY') != '2017') collectArray.push({
             date: d.date,
             count: state.investment.value * d.count
+        });
+    });
+    return collectArray;
+}
+
+function calculateResultData(state) {
+    var collectArray = [];
+
+    state.resultDataPart1.map(function (d, i) {
+        collectArray.push({
+            date: d.date,
+            count: state.resultDataPart1[i].count + state.resultDataPart2[i].count
         });
     });
     return collectArray;

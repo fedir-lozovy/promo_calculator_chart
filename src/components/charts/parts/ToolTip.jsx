@@ -53,7 +53,7 @@ export default class ToolTip extends React.Component {
                     <tspan x="0" textAnchor="middle" fontSize="15px"
                            fill="#ffffff">{this.props.tooltip.data.key}</tspan>
                     <tspan x="0" textAnchor="middle" dy="25" fontSize="20px"
-                           fill="#a9f3ff">{this.props.tooltip.data.value + " $"}</tspan>
+                           fill="#a9f3ff">{parseInt(this.props.tooltip.data.value) + " $"}</tspan>
                 </text>
             </g>
         );

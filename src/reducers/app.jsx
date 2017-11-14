@@ -8,28 +8,34 @@ import moment from 'moment';
 const initialState = {}
 export default function app(state = initialState, action) {
     switch (action.type) {
-        case CALCULATE_SUCCESS:
-            state = {
-                ...state,
-                accumulatedPricePerToken: calculateaccumulatedPricePerToken(state)
-            }
-            state = {
-                ...state,
-                espectedData: calculateEspectedData(state)
-            }
-            state = {
-                ...state,
-                resultDataPart1: calculateResultDataPart1(state)
-            }
-            state = {
-                ...state,
-                resultDataPart2: calculateResultDataPart2(state)
-            }
-            console.log(state)
-            return {...state}
-            break;
         default:
-            return state;
+        case CALCULATE_SUCCESS:
+
+            if (action && action.control && action.value)
+                state[action.control].value = action.value
+            if (state.initialData) {
+                state = {
+                    ...state,
+                    accumulatedPricePerToken: calculateaccumulatedPricePerToken(state)
+                }
+                state = {
+                    ...state,
+                    espectedData: calculateEspectedData(state)
+                }
+                state = {
+                    ...state,
+                    resultDataPart1: calculateResultDataPart1(state)
+                }
+                state = {
+                    ...state,
+                    resultDataPart2: calculateResultDataPart2(state)
+                }
+                state = {
+                    ...state,
+                    resultData: calculateResultData(state)
+                }
+            }
+            return {...state}
             break;
     }
 }
@@ -94,6 +100,18 @@ function calculateResultDataPart2(state) {
                 date: d.date,
                 count: state.investment.value * d.count
             })
+    })
+    return collectArray
+}
+
+function calculateResultData(state) {
+    let collectArray = []
+
+    state.resultDataPart1.map((d, i) => {
+        collectArray.push({
+            date: d.date,
+            count: state.resultDataPart1[i].count + state.resultDataPart2[i].count
+        })
     })
     return collectArray
 }
