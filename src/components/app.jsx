@@ -1,10 +1,11 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import LineChart from './charts/LineChart.jsx'
+
 
 import * as appActions from '../actions/app.jsx'
 import {bindActionCreators} from 'redux'
 
+import StackedBarChart from './recharts/StackedBarChart'
 
 export class App extends React.Component {
 
@@ -14,7 +15,7 @@ export class App extends React.Component {
     }
 
     calculate(e) {
-        let chArr=[]
+        let chArr = []
         if (parseFloat(e.target.value) < parseFloat(e.target.min))
             e.target.value = e.target.min;
         if (parseFloat(e.target.value) > parseFloat(e.target.max))
@@ -31,7 +32,7 @@ export class App extends React.Component {
 
 
     render() {
-        //  return <BarChart  data={[5,10,1,3]} size={[500,500]}/>
+
         return <div className="container">
             <div className="row">
                 <div className="col-xs-12">
@@ -73,18 +74,11 @@ export class App extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <div className="pad bottom-left-svg">
-                                {this.props.resultData && this.props.resultData.length ?
-                                    <LineChart width={1300} height="600" chartId="v1_chart"
-                                               data={this.props.resultData} data1={this.props.resultDataPart1}
-                                               data2={this.props.resultDataPart2}/>
-                                    : ''
-                                }
-                            </div>
-                        </div>
                     </div>
                 </div>
+            </div>
+            <div>
+                <StackedBarChart data={this.props.resultData}/>
             </div>
         </div>
     }

@@ -4,6 +4,9 @@ var webpack = require('webpack');
 module.exports = {
     entry: './src/index.js',
     output: {path: path.resolve(__dirname, 'builds'), filename: 'main.bundle.js'},
+    resolve: {
+        extensions: ['.js', '.jsx']
+    },
     module: {
         loaders: [
             {
