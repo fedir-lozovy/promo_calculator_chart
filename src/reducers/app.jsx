@@ -110,7 +110,8 @@ function calculateResultData(state) {
     state.resultDataPart1.map((d, i) => {
         collectArray.push({
             name: d.date,
-            a: state.resultDataPart1[i].count, b: state.resultDataPart2[i].count,
+            n:0,
+            a: parseInt(state.resultDataPart1[i].count), b: parseInt(state.resultDataPart2[i].count),
             totalValue: parseInt(state.resultDataPart1[i].count + state.resultDataPart2[i].count)
         })
     })

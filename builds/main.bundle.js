@@ -59615,8 +59615,8 @@ var StackedBarChart = function (_React$Component) {
                 null,
                 _react2.default.createElement(
                     _recharts.BarChart,
-                    { width: 1400, height: 600, data: data,
-                        margin: { top: 20, right: 30, left: 20, bottom: 5 },
+                    { width: 1200, height: 600, data: data,
+                        margin: { top: 20, right: 30, left: 20, bottom: 100 },
                         color: '#ffffff' },
                     _react2.default.createElement(_recharts.Legend, { width: 700,
                         content: function content(props) {
@@ -59640,11 +59640,11 @@ var StackedBarChart = function (_React$Component) {
                                 })
                             );
                         },
-                        verticalAlign: 'bottom',
+                        verticalAlign: 'top',
                         wrapperStyle: {
                             layout: 'horizontal'
                         } }),
-                    _react2.default.createElement(_recharts.XAxis, { dataKey: 'name', tickFormatter: this.formatXTicks, style: {
+                    _react2.default.createElement(_recharts.XAxis, { dataKey: 'name', tickFormatter: this.formatXTicks, dy: 60, style: {
                             "fontSize": "1.5em"
                         } }),
                     _react2.default.createElement(_recharts.YAxis, {
@@ -59654,11 +59654,23 @@ var StackedBarChart = function (_React$Component) {
                             "width": "150px"
                         } }),
                     _react2.default.createElement(_recharts.CartesianGrid, { strokeDasharray: '3 3' }),
+                    _react2.default.createElement(
+                        _recharts.Bar,
+                        { dataKey: 'n', stackId: 'a', fill: '#d8a22f' },
+                        _react2.default.createElement(_recharts.LabelList, { dataKey: 'b', dx: 85, dy: 10, position: 'bottom', style: {
+                                "fontSize": "1.3em",
+                                "fill": "#3687F2"
+                            } }),
+                        _react2.default.createElement(_recharts.LabelList, { dataKey: 'a', dx: 85, dy: 40, position: 'bottom', style: {
+                                "fontSize": "1.3em",
+                                "fill": '#d8a22f'
+                            } })
+                    ),
                     _react2.default.createElement(_recharts.Bar, { dataKey: 'a', stackId: 'a', fill: '#d8a22f' }),
                     _react2.default.createElement(
                         _recharts.Bar,
                         { dataKey: 'b', stackId: 'a', fill: '#327ada' },
-                        _react2.default.createElement(_recharts.LabelList, { dataKey: 'totalValue', dx: 100, position: 'top', style: {
+                        _react2.default.createElement(_recharts.LabelList, { dataKey: 'totalValue', dx: 85, dy: -10, position: 'top', style: {
                                 "fontSize": "2em"
                             } })
                     )
@@ -74897,7 +74909,8 @@ function calculateResultData(state) {
     state.resultDataPart1.map(function (d, i) {
         collectArray.push({
             name: d.date,
-            a: state.resultDataPart1[i].count, b: state.resultDataPart2[i].count,
+            n: 0,
+            a: parseInt(state.resultDataPart1[i].count), b: parseInt(state.resultDataPart2[i].count),
             totalValue: parseInt(state.resultDataPart1[i].count + state.resultDataPart2[i].count)
         });
     });

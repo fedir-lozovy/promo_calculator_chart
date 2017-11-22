@@ -68,8 +68,8 @@ export default class StackedBarChart extends React.Component {
             );
         }
         return <div>
-            <BarChart width={1400} height={600} data={data}
-                      margin={{top: 20, right: 30, left: 20, bottom: 5}}
+            <BarChart width={1200} height={600} data={data}
+                      margin={{top: 20, right: 30, left: 20, bottom: 100}}
                       color="#ffffff">
 
                 <Legend width={700}
@@ -91,11 +91,11 @@ export default class StackedBarChart extends React.Component {
                                 </ul>
                             );
                         }}
-                        verticalAlign="bottom"
+                        verticalAlign="top"
                         wrapperStyle={{
                             layout: 'horizontal',
                         }}/>
-                <XAxis dataKey="name" tickFormatter={this.formatXTicks} style={{
+                <XAxis dataKey="name" tickFormatter={this.formatXTicks} dy={60} style={{
                     "fontSize": "1.5em"
                 }}/>
                 <YAxis
@@ -106,9 +106,22 @@ export default class StackedBarChart extends React.Component {
                     }}/>
                 <CartesianGrid strokeDasharray="3 3"/>
 
-                <Bar dataKey="a" stackId="a" fill="#d8a22f"/>
+                <Bar dataKey="n" stackId="a" fill="#d8a22f">
+                    <LabelList dataKey="b" dx={85} dy={10} position='bottom' style={{
+                        "fontSize": "1.3em",
+                        "fill":"#3687F2"
+                    }}>
+                    </LabelList>
+                    <LabelList dataKey="a" dx={85} dy={40} position='bottom' style={{
+                        "fontSize": "1.3em",
+                        "fill":'#d8a22f'
+                    }}>
+                    </LabelList>
+                </Bar>
+                <Bar dataKey="a" stackId="a" fill="#d8a22f">
+                </Bar>
                 <Bar dataKey="b" stackId="a" fill="#327ada">
-                    <LabelList dataKey="totalValue" dx={100} position='top' style={{
+                    <LabelList dataKey="totalValue" dx={85} dy={-10} position='top' style={{
                         "fontSize": "2em"
                     }}>
                     </LabelList>
