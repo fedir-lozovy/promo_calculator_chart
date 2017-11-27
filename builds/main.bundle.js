@@ -59553,7 +59553,7 @@ var StackedBarChart = function (_React$Component) {
     _createClass(StackedBarChart, [{
         key: 'formatXTicks',
         value: function formatXTicks(d) {
-            return (0, _moment2.default)(d, 'dd.MM.YYYY').format('MMM YYYY');
+            return (0, _moment2.default)(d, 'dd.MM.YYYY').format('YYYY');
         }
     }, {
         key: 'formatYTicks',
@@ -59656,20 +59656,20 @@ var StackedBarChart = function (_React$Component) {
                     _react2.default.createElement(_recharts.CartesianGrid, { strokeDasharray: '3 3' }),
                     _react2.default.createElement(
                         _recharts.Bar,
-                        { dataKey: 'n', stackId: 'a', fill: '#d8a22f' },
+                        { dataKey: 'n', stackId: 'a', fill: '#1d84ff' },
                         _react2.default.createElement(_recharts.LabelList, { dataKey: 'b', dx: 85, dy: 10, position: 'bottom', style: {
                                 "fontSize": "1.3em",
-                                "fill": "#3687F2"
+                                "fill": "#4ce4dc"
                             } }),
                         _react2.default.createElement(_recharts.LabelList, { dataKey: 'a', dx: 85, dy: 40, position: 'bottom', style: {
                                 "fontSize": "1.3em",
-                                "fill": '#d8a22f'
+                                "fill": '#1d84ff'
                             } })
                     ),
-                    _react2.default.createElement(_recharts.Bar, { dataKey: 'a', stackId: 'a', fill: '#d8a22f' }),
+                    _react2.default.createElement(_recharts.Bar, { dataKey: 'a', stackId: 'a', fill: '#1d84ff' }),
                     _react2.default.createElement(
                         _recharts.Bar,
-                        { dataKey: 'b', stackId: 'a', fill: '#327ada' },
+                        { dataKey: 'b', stackId: 'a', fill: '#4ce4dc' },
                         _react2.default.createElement(_recharts.LabelList, { dataKey: 'totalValue', dx: 85, dy: -10, position: 'top', style: {
                                 "fontSize": "2em"
                             } })
@@ -74921,7 +74921,7 @@ function calculateResultData(state) {
 /* 714 */
 /***/ (function(module, exports) {
 
-module.exports = [{"date":"01.10.2017","count":"0,0019151"},{"date":"01.11.2017","count":"0,0024130"},{"date":"01.12.2017","count":"0,0029685"},{"date":"01.01.2018","count":"0,0036280"},{"date":"01.02.2018","count":"0,0079809"},{"date":"01.03.2018","count":"0,0098138"},{"date":"01.04.2018","count":"0,0151943"},{"date":"01.05.2018","count":"0,0200215"},{"date":"01.06.2018","count":"0,0252019"},{"date":"01.07.2018","count":"0,0296867"},{"date":"01.08.2018","count":"0,0327572"},{"date":"01.09.2018","count":"0,0345756"},{"date":"01.10.2018","count":"0,0385164"},{"date":"01.11.2018","count":"0,0425747"},{"date":"01.12.2018","count":"0,0467518"},{"date":"01.01.2019","count":"0,0510486"},{"date":"01.02.2019","count":"0,0554654"},{"date":"01.03.2019","count":"0,0600026"},{"date":"01.04.2019","count":"0,0646602"},{"date":"01.05.2019","count":"0,0694384"},{"date":"01.06.2019","count":"0,0743371"},{"date":"01.07.2019","count":"0,0793564"},{"date":"01.08.2019","count":"0,0844963"},{"date":"01.09.2019","count":"0,0897569"},{"date":"01.10.2019","count":"0,0951380"},{"date":"01.11.2019","count":"0,1006398"},{"date":"01.12.2019","count":"0,1062622"},{"date":"01.01.2020","count":"0,1120054"},{"date":"01.02.2020","count":"0,1178693"},{"date":"01.03.2020","count":"0,1238540"},{"date":"01.04.2020","count":"0,1299595"},{"date":"01.05.2020","count":"0,1361859"},{"date":"01.06.2020","count":"0,1425334"},{"date":"01.07.2020","count":"0,1490018"},{"date":"01.08.2020","count":"0,1555914"},{"date":"01.09.2020","count":"0,1623022"},{"date":"01.10.2020","count":"0,1691342"},{"date":"01.11.2020","count":"0,1760876"},{"date":"01.12.2020","count":"0,1831624"},{"date":"01.01.2021","count":"0,1903587"},{"date":"01.02.2021","count":"0,1976767"},{"date":"01.03.2021","count":"0,2051163"},{"date":"01.04.2021","count":"0,2126778"},{"date":"01.05.2021","count":"0,2203611"},{"date":"01.06.2021","count":"0,2281665"},{"date":"01.07.2021","count":"0,2360939"},{"date":"01.08.2021","count":"0,2441435"},{"date":"01.09.2021","count":"0,2523154"},{"date":"01.10.2021","count":"0,2606096"},{"date":"01.11.2021","count":"0,2690264"},{"date":"01.12.2021","count":"0,2775657"},{"date":"01.01.2022","count":"0,2862277"},{"date":"01.02.2022","count":"0,2950124"},{"date":"01.03.2022","count":"0,3039201"},{"date":"01.04.2022","count":"0,3129507"},{"date":"01.05.2022","count":"0,3221045"},{"date":"01.06.2022","count":"0,3313814"},{"date":"01.07.2022","count":"0,3407815"},{"date":"01.08.2022","count":"0,3503051"},{"date":"01.09.2022","count":"0,3599522"},{"date":"01.10.2022","count":"0,3697228"},{"date":"01.11.2022","count":"0,3796171"},{"date":"01.12.2022","count":"0,3896352"}]
+module.exports = [{"date":"01.10.2017","count":"0,0000000"},{"date":"01.11.2017","count":"0,0000000"},{"date":"01.12.2017","count":"0,0000000"},{"date":"01.01.2018","count":"0,0000000"},{"date":"01.02.2018","count":"0,0000000"},{"date":"01.03.2018","count":"0,0000000"},{"date":"01.04.2018","count":"0,0000000"},{"date":"01.05.2018","count":"0,0064381"},{"date":"01.06.2018","count":"0,0089357"},{"date":"01.07.2018","count":"0,0116850"},{"date":"01.08.2018","count":"0,0141871"},{"date":"01.09.2018","count":"0,0163532"},{"date":"01.10.2018","count":"0,0182216"},{"date":"01.11.2018","count":"0,0198843"},{"date":"01.12.2018","count":"0,0214283"},{"date":"01.01.2019","count":"0,0229155"},{"date":"01.02.2019","count":"0,0243846"},{"date":"01.03.2019","count":"0,0258580"},{"date":"01.04.2019","count":"0,0273487"},{"date":"01.05.2019","count":"0,0288638"},{"date":"01.06.2019","count":"0,0304075"},{"date":"01.07.2019","count":"0,0319821"},{"date":"01.08.2019","count":"0,0335892"},{"date":"01.09.2019","count":"0,0352295"},{"date":"01.10.2019","count":"0,0369036"},{"date":"01.11.2019","count":"0,0386119"},{"date":"01.12.2019","count":"0,0403548"},{"date":"01.01.2020","count":"0,0421324"},{"date":"01.02.2020","count":"0,0439449"},{"date":"01.03.2020","count":"0,0457926"},{"date":"01.04.2020","count":"0,0476754"},{"date":"01.05.2020","count":"0,0495936"},{"date":"01.06.2020","count":"0,0515472"},{"date":"01.07.2020","count":"0,0535364"},{"date":"01.08.2020","count":"0,0555612"},{"date":"01.09.2020","count":"0,0576217"},{"date":"01.10.2020","count":"0,0597180"},{"date":"01.11.2020","count":"0,0618501"},{"date":"01.12.2020","count":"0,0640181"},{"date":"01.01.2021","count":"0,0662220"},{"date":"01.02.2021","count":"0,0684620"},{"date":"01.03.2021","count":"0,0707381"},{"date":"01.04.2021","count":"0,0730503"},{"date":"01.05.2021","count":"0,0753986"},{"date":"01.06.2021","count":"0,0777832"},{"date":"01.07.2021","count":"0,0802040"},{"date":"01.08.2021","count":"0,0826611"},{"date":"01.09.2021","count":"0,0851546"},{"date":"01.10.2021","count":"0,0876844"},{"date":"01.11.2021","count":"0,0902506"},{"date":"01.12.2021","count":"0,0928533"},{"date":"01.01.2022","count":"0,0954925"},{"date":"01.02.2022","count":"0,0981682"},{"date":"01.03.2022","count":"0,1008805"},{"date":"01.04.2022","count":"0,1036294"},{"date":"01.05.2022","count":"0,1064148"},{"date":"01.06.2022","count":"0,1092370"},{"date":"01.07.2022","count":"0,1120958"},{"date":"01.08.2022","count":"0,1149913"},{"date":"01.09.2022","count":"0,1179235"},{"date":"01.10.2022","count":"0,1208926"},{"date":"01.11.2022","count":"0,1238984"},{"date":"01.12.2022","count":"0,1269410"}]
 
 /***/ })
 /******/ ]);

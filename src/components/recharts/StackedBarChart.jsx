@@ -11,7 +11,7 @@ export default class StackedBarChart extends React.Component {
 
 
     formatXTicks(d) {
-        return moment(d, 'dd.MM.YYYY').format('MMM YYYY')
+        return moment(d, 'dd.MM.YYYY').format('YYYY')
     }
 
     formatYTicks(d) {
@@ -106,21 +106,21 @@ export default class StackedBarChart extends React.Component {
                     }}/>
                 <CartesianGrid strokeDasharray="3 3"/>
 
-                <Bar dataKey="n" stackId="a" fill="#d8a22f">
+                <Bar dataKey="n" stackId="a" fill="#1d84ff">
                     <LabelList dataKey="b" dx={85} dy={10} position='bottom' style={{
                         "fontSize": "1.3em",
-                        "fill":"#3687F2"
+                        "fill":"#4ce4dc"
                     }}>
                     </LabelList>
                     <LabelList dataKey="a" dx={85} dy={40} position='bottom' style={{
                         "fontSize": "1.3em",
-                        "fill":'#d8a22f'
+                        "fill":'#1d84ff'
                     }}>
                     </LabelList>
                 </Bar>
-                <Bar dataKey="a" stackId="a" fill="#d8a22f">
+                <Bar dataKey="a" stackId="a" fill="#1d84ff">
                 </Bar>
-                <Bar dataKey="b" stackId="a" fill="#327ada">
+                <Bar dataKey="b" stackId="a" fill="#4ce4dc">
                     <LabelList dataKey="totalValue" dx={85} dy={-10} position='top' style={{
                         "fontSize": "2em"
                     }}>

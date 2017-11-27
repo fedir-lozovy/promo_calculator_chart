@@ -4,7 +4,7 @@ import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 import App from './components/app.jsx';
 import configureStore from './store/configureStore'
-import initialData from './data/dataset171117.csv'
+import initialData from './data/dataset271117.csv'
 import moment from 'moment'
 
 const defaultTimeFormat = 'DD.MM.YYYY'
