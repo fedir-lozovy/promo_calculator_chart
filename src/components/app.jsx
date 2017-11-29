@@ -33,22 +33,23 @@ export class App extends React.Component {
 
     render() {
 
-        return <div className="container">
+        return <div className="" style={{width:'100%','height':'100%'}}>
             <div className="row">
                 <div className="col-xs-12">
                     <div className="top" id="top-line-chart">
                         <div>
                             <div className="col-xs-12">&nbsp;</div>
                             <div className="col-xs-12">
-                                <div className="col-xs-3">
-                                    <label className="form-label">Если USER купит токенов по цене 1$=1EXO на
-                                        сумму</label>
+                                <div className="col-xs-6">
+                                    <label className="form-label"
+                                           style={{fontSize:window.innerHeight*0.002+'em'}}>If the user purchases tokens for the price of 1$=1EXO in the amount of</label>
                                     <input type="number" className="form-control"
                                            defaultValue={this.props.investment.value} min={this.props.investment.min}
                                            max={this.props.investment.max}
+                                           style={{width:window.innerWidth*0.2}}
                                            id="investment" onChange={::this.calculate}/>
                                 </div>
-                                <div className="col-xs-9">
+                                <div className="col-xs-6" style={{display:'none'}}>
                                     <div className="col-xs-4 pull-right">
                                         <label className="form-label">Бета коэфф. риска (чем выше, тем больший
                                             риск)</label>

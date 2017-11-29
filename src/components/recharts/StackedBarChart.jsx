@@ -60,32 +60,34 @@ export default class StackedBarChart extends React.Component {
                     {
                         payload.map((entry, index) => (
                             <li key={`item-${index}`}>{entry.value === 'a' ?
-                                'Накопленная доходность от маржинального кредитования'
-                                : 'Доходность от прогнозируемого роста курса токена'}</li>
+                                'Accumulated profitability from margin lending'
+                                : 'Revenue from the forecasted token rate growth'}</li>
                         ))
                     }
                 </ul>
             );
         }
         return <div>
-            <BarChart width={1200} height={600} data={data}
-                      margin={{top: 20, right: 30, left: 20, bottom: 100}}
+            <BarChart width={window.innerWidth - (window.innerWidth * 0.1)}
+                      height={window.innerHeight - (window.innerHeight * 0.1)} data={data}
+                      margin={{top: 20, right: 20, left: window.innerWidth * 0.07, bottom: 100}}
+                      textAlign="center"
                       color="#ffffff">
 
-                <Legend width={700}
+                <Legend width={window.innerWidth}
                         content={(props) => {
                             const {payload} = props;
 
                             return (
-                                <ul style={{"listStyle": "none", "fontSize": "1.5em"}}>
+                                <ul style={{"listStyle": "none", "fontSize": window.innerHeight * 0.0025 + "em"}}>
                                     {
                                         payload.map((entry, index) => {
                                             if (entry.value === 'a')
-                                                return <li className="legendli1" key={`item-${index}`}>Накопленная
-                                                    доходность от маржинального кредитования</li>
+                                                return <li className="legendli1" key={`item-${index}`}>Accumulated
+                                                    profitability from margin lending</li>
                                             if (entry.value === 'b')
-                                                return <li className="legendli2" key={`item-${index}`}>Доходность от
-                                                    прогнозируемого роста курса токена</li>
+                                                return <li className="legendli2" key={`item-${index}`}>Revenue from the
+                                                    forecasted token rate growth</li>
                                         })
                                     }
                                 </ul>
@@ -95,34 +97,37 @@ export default class StackedBarChart extends React.Component {
                         wrapperStyle={{
                             layout: 'horizontal',
                         }}/>
-                <XAxis dataKey="name" tickFormatter={this.formatXTicks} dy={60} style={{
-                    "fontSize": "1.5em"
+                <XAxis dataKey="name" tickFormatter={this.formatXTicks} dy={window.innerHeight * 0.06} style={{
+                    "fontSize": window.innerHeight * 0.002 + "em",
                 }}/>
                 <YAxis
                     tickFormatter={this.formatYTicks}
                     style={{
-                        "fontSize": "1.5em",
+                        "fontSize": window.innerHeight * 0.0015 + "em",
                         "width": "150px"
                     }}/>
                 <CartesianGrid strokeDasharray="3 3"/>
 
                 <Bar dataKey="n" stackId="a" fill="#1d84ff">
-                    <LabelList dataKey="b" dx={85} dy={10} position='bottom' style={{
-                        "fontSize": "1.3em",
-                        "fill":"#4ce4dc"
+                    <LabelList dataKey="b" dx={window.innerWidth * 0.062} dy={window.innerHeight * 0.01}
+                               position='bottom' style={{
+                        "fontSize": window.innerHeight * 0.0015 + "em",
+                        "fill": "#4ce4dc"
                     }}>
                     </LabelList>
-                    <LabelList dataKey="a" dx={85} dy={40} position='bottom' style={{
-                        "fontSize": "1.3em",
-                        "fill":'#1d84ff'
+                    <LabelList dataKey="a" dx={window.innerWidth * 0.062} dy={window.innerHeight * 0.04}
+                               position='bottom' style={{
+                        "fontSize": window.innerHeight * 0.0015 + "em",
+                        "fill": '#1d84ff'
                     }}>
                     </LabelList>
                 </Bar>
                 <Bar dataKey="a" stackId="a" fill="#1d84ff">
                 </Bar>
                 <Bar dataKey="b" stackId="a" fill="#4ce4dc">
-                    <LabelList dataKey="totalValue" dx={85} dy={-10} position='top' style={{
-                        "fontSize": "2em"
+                    <LabelList dataKey="totalValue" dx={window.innerWidth * 0.062} dy={-window.innerHeight * 0.01}
+                               position='top' style={{
+                        "fontSize": window.innerHeight * 0.002 + "em"
                     }}>
                     </LabelList>
                 </Bar>

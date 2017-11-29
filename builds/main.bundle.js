@@ -58257,7 +58257,7 @@ var App = exports.App = function (_React$Component) {
 
             return _react2.default.createElement(
                 'div',
-                { className: 'container' },
+                { className: '', style: { width: '100%', 'height': '100%' } },
                 _react2.default.createElement(
                     'div',
                     { className: 'row' },
@@ -58280,20 +58280,22 @@ var App = exports.App = function (_React$Component) {
                                     { className: 'col-xs-12' },
                                     _react2.default.createElement(
                                         'div',
-                                        { className: 'col-xs-3' },
+                                        { className: 'col-xs-6' },
                                         _react2.default.createElement(
                                             'label',
-                                            { className: 'form-label' },
-                                            '\u0415\u0441\u043B\u0438 USER \u043A\u0443\u043F\u0438\u0442 \u0442\u043E\u043A\u0435\u043D\u043E\u0432 \u043F\u043E \u0446\u0435\u043D\u0435 1$=1EXO \u043D\u0430 \u0441\u0443\u043C\u043C\u0443'
+                                            { className: 'form-label',
+                                                style: { fontSize: window.innerHeight * 0.002 + 'em' } },
+                                            'If the user purchases tokens for the price of 1$=1EXO in the amount of'
                                         ),
                                         _react2.default.createElement('input', { type: 'number', className: 'form-control',
                                             defaultValue: this.props.investment.value, min: this.props.investment.min,
                                             max: this.props.investment.max,
+                                            style: { width: window.innerWidth * 0.2 },
                                             id: 'investment', onChange: this.calculate.bind(this) })
                                     ),
                                     _react2.default.createElement(
                                         'div',
-                                        { className: 'col-xs-9' },
+                                        { className: 'col-xs-6', style: { display: 'none' } },
                                         _react2.default.createElement(
                                             'div',
                                             { className: 'col-xs-4 pull-right' },
@@ -59605,7 +59607,7 @@ var StackedBarChart = function (_React$Component) {
                         return _react2.default.createElement(
                             'li',
                             { key: 'item-' + index },
-                            entry.value === 'a' ? 'Накопленная доходность от маржинального кредитования' : 'Доходность от прогнозируемого роста курса токена'
+                            entry.value === 'a' ? 'Accumulated profitability from margin lending' : 'Revenue from the forecasted token rate growth'
                         );
                     })
                 );
@@ -59615,27 +59617,29 @@ var StackedBarChart = function (_React$Component) {
                 null,
                 _react2.default.createElement(
                     _recharts.BarChart,
-                    { width: 1200, height: 600, data: data,
-                        margin: { top: 20, right: 30, left: 20, bottom: 100 },
+                    { width: window.innerWidth - window.innerWidth * 0.1,
+                        height: window.innerHeight - window.innerHeight * 0.1, data: data,
+                        margin: { top: 20, right: 20, left: window.innerWidth * 0.07, bottom: 100 },
+                        textAlign: 'center',
                         color: '#ffffff' },
-                    _react2.default.createElement(_recharts.Legend, { width: 700,
+                    _react2.default.createElement(_recharts.Legend, { width: window.innerWidth,
                         content: function content(props) {
                             var payload = props.payload;
 
 
                             return _react2.default.createElement(
                                 'ul',
-                                { style: { "listStyle": "none", "fontSize": "1.5em" } },
+                                { style: { "listStyle": "none", "fontSize": window.innerHeight * 0.0025 + "em" } },
                                 payload.map(function (entry, index) {
                                     if (entry.value === 'a') return _react2.default.createElement(
                                         'li',
                                         { className: 'legendli1', key: 'item-' + index },
-                                        '\u041D\u0430\u043A\u043E\u043F\u043B\u0435\u043D\u043D\u0430\u044F \u0434\u043E\u0445\u043E\u0434\u043D\u043E\u0441\u0442\u044C \u043E\u0442 \u043C\u0430\u0440\u0436\u0438\u043D\u0430\u043B\u044C\u043D\u043E\u0433\u043E \u043A\u0440\u0435\u0434\u0438\u0442\u043E\u0432\u0430\u043D\u0438\u044F'
+                                        'Accumulated profitability from margin lending'
                                     );
                                     if (entry.value === 'b') return _react2.default.createElement(
                                         'li',
                                         { className: 'legendli2', key: 'item-' + index },
-                                        '\u0414\u043E\u0445\u043E\u0434\u043D\u043E\u0441\u0442\u044C \u043E\u0442 \u043F\u0440\u043E\u0433\u043D\u043E\u0437\u0438\u0440\u0443\u0435\u043C\u043E\u0433\u043E \u0440\u043E\u0441\u0442\u0430 \u043A\u0443\u0440\u0441\u0430 \u0442\u043E\u043A\u0435\u043D\u0430'
+                                        'Revenue from the forecasted token rate growth'
                                     );
                                 })
                             );
@@ -59644,25 +59648,27 @@ var StackedBarChart = function (_React$Component) {
                         wrapperStyle: {
                             layout: 'horizontal'
                         } }),
-                    _react2.default.createElement(_recharts.XAxis, { dataKey: 'name', tickFormatter: this.formatXTicks, dy: 60, style: {
-                            "fontSize": "1.5em"
+                    _react2.default.createElement(_recharts.XAxis, { dataKey: 'name', tickFormatter: this.formatXTicks, dy: window.innerHeight * 0.06, style: {
+                            "fontSize": window.innerHeight * 0.002 + "em"
                         } }),
                     _react2.default.createElement(_recharts.YAxis, {
                         tickFormatter: this.formatYTicks,
                         style: {
-                            "fontSize": "1.5em",
+                            "fontSize": window.innerHeight * 0.0015 + "em",
                             "width": "150px"
                         } }),
                     _react2.default.createElement(_recharts.CartesianGrid, { strokeDasharray: '3 3' }),
                     _react2.default.createElement(
                         _recharts.Bar,
                         { dataKey: 'n', stackId: 'a', fill: '#1d84ff' },
-                        _react2.default.createElement(_recharts.LabelList, { dataKey: 'b', dx: 85, dy: 10, position: 'bottom', style: {
-                                "fontSize": "1.3em",
+                        _react2.default.createElement(_recharts.LabelList, { dataKey: 'b', dx: window.innerWidth * 0.062, dy: window.innerHeight * 0.01,
+                            position: 'bottom', style: {
+                                "fontSize": window.innerHeight * 0.0015 + "em",
                                 "fill": "#4ce4dc"
                             } }),
-                        _react2.default.createElement(_recharts.LabelList, { dataKey: 'a', dx: 85, dy: 40, position: 'bottom', style: {
-                                "fontSize": "1.3em",
+                        _react2.default.createElement(_recharts.LabelList, { dataKey: 'a', dx: window.innerWidth * 0.062, dy: window.innerHeight * 0.04,
+                            position: 'bottom', style: {
+                                "fontSize": window.innerHeight * 0.0015 + "em",
                                 "fill": '#1d84ff'
                             } })
                     ),
@@ -59670,8 +59676,9 @@ var StackedBarChart = function (_React$Component) {
                     _react2.default.createElement(
                         _recharts.Bar,
                         { dataKey: 'b', stackId: 'a', fill: '#4ce4dc' },
-                        _react2.default.createElement(_recharts.LabelList, { dataKey: 'totalValue', dx: 85, dy: -10, position: 'top', style: {
-                                "fontSize": "2em"
+                        _react2.default.createElement(_recharts.LabelList, { dataKey: 'totalValue', dx: window.innerWidth * 0.062, dy: -window.innerHeight * 0.01,
+                            position: 'top', style: {
+                                "fontSize": window.innerHeight * 0.002 + "em"
                             } })
                     )
                 )
