@@ -4,7 +4,7 @@ import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 import App from './components/app.jsx';
 import configureStore from './store/configureStore'
-import initialData from './data/dataset271117.csv'
+import initialData from './data/dataset011217.csv'
 import moment from 'moment'
 
 const defaultTimeFormat = 'DD.MM.YYYY'
@@ -32,8 +32,8 @@ const store = configureStore({
             max: 2
         },
         investment: {
-            value: 2000,
-            defaultValue: 2000,
+            value: 1000,
+            defaultValue: 1000,
             min: 500,
             max: 10000000
         },
